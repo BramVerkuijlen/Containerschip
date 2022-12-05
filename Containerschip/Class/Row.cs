@@ -36,7 +36,7 @@ namespace Containerschip
             }
         }
 
-        public List<Container> DevideOverRow(List<Container> containers)
+        public void DevideOverRow(List<Container> containers)
         {
             List<Container> _normal = new List<Container>();
             List<Container> _valuable = new List<Container>();
@@ -47,62 +47,90 @@ namespace Containerschip
 
             for (int i = 1; i < StackHight; i++)
             {
-                foreach (Stack stack in _stacks.Where(x => x.Cooling == true))
+                foreach (Stack stack in _stacks)
                 {
                     bool placeFilled = false;
 
-                    if (i < StackHight)
+                    if (stack.Cooling)
                     {
-                        (placeFilled, _cooled) = TryFillstack(stack, _cooled);
-
-                        if (!placeFilled)
+                        if (i < StackHight)
                         {
-                            (placeFilled, _normal) = TryFillstack(stack, _normal);
+                            placeFilled = TryFillSpace(stack, _cooled);
+
+                            if (!placeFilled)
+                            {
+                                placeFilled = TryFillSpace(stack, _normal);
+                            }
+                        }
+
+                        else if (i == StackHight)
+                        {
+                            placeFilled = TryFillSpace(stack, _valuableCooled);
+
+                            if (!placeFilled)
+                            {
+                                placeFilled = TryFillSpace(stack, _cooled);
+                            }
+
+                            if (!placeFilled)
+                            {
+                                placeFilled = TryFillSpace(stack, _valuable);
+                            }
+
+                            if (!placeFilled)
+                            {
+                                placeFilled = TryFillSpace(stack, _normal);
+                            }
                         }
                     }
 
-                    else if (i == StackHight)
+                    else
                     {
-                        (placeFilled, _valuableCooled) = TryFillstack(stack, _valuableCooled);
-
-                        if (!placeFilled)
+                        if (i < StackHight)
                         {
-                            (placeFilled, _cooled) = TryFillstack(stack, _cooled);
+                            placeFilled = TryFillSpace(stack, _normal);
                         }
 
-                        if (!placeFilled)
+                        else if (i == StackHight)
                         {
-                            (placeFilled, _valuable) = TryFillstack(stack, _valuable);
-                        }
+                            placeFilled = TryFillSpace(stack, _valuable);
 
-                        if (!placeFilled)
-                        {
-                            (placeFilled, _normal) = TryFillstack(stack, _normal);
+
+                            if (!placeFilled)
+                            {
+                                placeFilled = TryFillSpace(stack, _normal);
+                            }
                         }
                     }
-
                 }
             }
 
-            containers.AddRange(_normal);
-            containers.AddRange(_valuable);
-            containers.AddRange(_cooled);
-            containers.AddRange(_valuableCooled);
+            List<Container> Remaining = new List<Container>();
 
-            return containers;
+            Remaining.AddRange(_normal);
+            Remaining.AddRange(_valuable);
+            Remaining.AddRange(_cooled);
+            Remaining.AddRange(_valuableCooled);
+
+            containers =  Remaining;
         }
 
-        private (bool, List<Container>) TryFillstack(Stack stack, List<Container> containers)
+        public void TryFillStacKCooling()
+        {
+
+        }
+
+        private bool TryFillSpace(Stack stack, List<Container> containers)
         {
             foreach (Container container in containers)
             {
                 if (stack.TryFill(container))
                 {
                     containers.Remove(container);
-                    return (true, containers);
+                    return true;
                 }
             }
-            return (false, containers);
+            return false;
         }
         private (List<Container>, List<Container>, List<Container>, List<Container>) SortContainers(List<Container> containers)
         {
@@ -111,37 +139,29 @@ namespace Containerschip
             List<Container> Cooled = new List<Container>();
             List<Container> ValuableCooled = new List<Container>();
 
-            foreach(Container container in containers)
+            foreach (Container container in containers)
             {
                 if (container.NeedElectricity)
                 {
                     if (container.Type == ContainerType.Valuable)
                     {
                         ValuableCooled.Add(container);
-
-                        break;
                     }
 
                     else
                     {
                         Cooled.Add(container);
-
-                        break;
                     }
                 }
 
                 else if (container.Type == ContainerType.Valuable)
                 {
                     valuable.Add(container);
-
-                    break;
                 }
 
                 else
                 {
                     normal.Add(container);
-
-                    break;
                 }
             }
             return (normal, valuable, Cooled, ValuableCooled);

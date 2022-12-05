@@ -29,7 +29,7 @@ namespace Containerschip
         {
             if (_rows.Count() % 2 == 0)
             {
-                containers = FillMiddelRow(containers);
+                FillMiddelRow(containers);
             }
 
             for (int i = 0; i < _rows.Count()/2; i++)
