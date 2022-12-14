@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -41,24 +42,27 @@ namespace Containerschip
             return containers;
         }
         
-        private int CalcTotalWeight(List<Container> containers)
+
+        // make methods underneath private, they are public for testing porposes
+
+        public int CalcTotalWeight(List<Container> containers)
         {
             return containers.Sum(e => e.Weight);
         }
 
-        private List<Container> FillMiddelRow(List<Container> containers)
+        public void FillMiddelRow(List<Container> containers)
         {
-            return _rows[_rows.Count() / 2 + 1].DevideOverRow(containers);
+            _rows[_rows.Count() / 2 + 1].DevideOverRow(containers);
         }
 
-        private List<Container> FillRowOnLeft(List<Container> containers, int NumFromLeft)
+        public void FillRowOnLeft(List<Container> containers, int NumFromLeft)
         {
-            return _rows[NumFromLeft].DevideOverRow(containers);
+            _rows[NumFromLeft].DevideOverRow(containers);
         }
 
-        private List<Container> FillRowOnRight(List<Container> containers, int NumFromRight)
+        public void FillRowOnRight(List<Container> containers, int NumFromRight)
         {
-            return _rows[_rows.Count-1-NumFromRight].DevideOverRow(containers);
+            _rows[_rows.Count-1-NumFromRight].DevideOverRow(containers);
         }
     }
 }
