@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace UnitTests
 {
-    internal class ContainerTest
+    public class ContainerTest
     {
+
     }
 }

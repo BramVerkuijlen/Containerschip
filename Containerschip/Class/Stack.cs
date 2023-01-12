@@ -29,9 +29,52 @@ namespace Containerschip
             Cooling = isCooling;
         }
 
-        public bool TryFill(Container container)
+        public bool TryAdd(Container newContainer)
         {
+            if (Full)
+            {
+                return false;
+            }
+
+            if (!CanPlaceOnTop(newContainer))
+            {
+                return false;
+                }
+
+            if (WillColapseStack(newContainer))
+            {
+                return false;
+            }
+
+            _containers.Add(newContainer);
             return true;
+        }
+        public bool CanPlaceOnTop(Container newContainer)
+        {
+            if (_containers.Count() != 0)
+            {
+                return (_containers.Last().Type != ContainerType.Valuable);
+            }
+            return true;
+        }
+
+        public bool WillColapseStack(Container newContainer)
+        {
+            for (int currentContainer = 0; currentContainer < _containers.Count(); currentContainer++)
+            {
+                int WeightOnTop = 0;
+
+                for (int i = 1 + currentContainer; i < Containers.Count(); i++)
+                {
+                    WeightOnTop += _containers[i].Weight;
+                }
+
+                if (_containers[currentContainer].CarryCapacity < WeightOnTop + newContainer.Weight)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

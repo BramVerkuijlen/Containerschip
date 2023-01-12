@@ -12,6 +12,7 @@ namespace UnitTests
     [TestClass]
     public class ShipTest
     {
+        [DataRow(10, 5, 6, 21)]
         [TestMethod]
         public void CalcTotalWeight_CalcWeight(int weight1, int weight2, int weight3, int expectedWeight)
         {
@@ -22,8 +23,8 @@ namespace UnitTests
             List<Container> containers = new List<Container>
             {
                 new Container(weight1, 1, ContainerType.Normal, false),
-                new Container(weight2, 1, ContainerType.Normal, false),
-                new Container(weight3, 1, ContainerType.Normal, false)
+                new Container(weight2, 1, ContainerType.Valuable, false),
+                new Container(weight3, 1, ContainerType.Normal, true)
             };
 
             //act
@@ -80,4 +81,5 @@ namespace UnitTests
             ship.FillRowOnRight(containers, 0);
         }
     }
+    
 }

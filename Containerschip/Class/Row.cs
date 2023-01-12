@@ -43,7 +43,6 @@ namespace Containerschip
             {
                 foreach (Stack stack in _stacks)
                 {
-                    bool placeFilled = false;
 
                     if (stack.Cooling)
                     {
@@ -170,7 +169,7 @@ namespace Containerschip
         {
             foreach (Container container in containers)
             {
-                if (stack.TryFill(container))
+                if (stack.TryAdd(container))
                 {
                     containers.Remove(container);
                     return true;
