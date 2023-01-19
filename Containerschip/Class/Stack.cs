@@ -49,7 +49,7 @@ namespace Containerschip
             _containers.Add(newContainer);
             return true;
         }
-        public bool CanPlaceOnTop(Container newContainer)
+        private bool CanPlaceOnTop(Container newContainer)
         {
             if (_containers.Count() != 0)
             {
@@ -58,7 +58,7 @@ namespace Containerschip
             return true;
         }
 
-        public bool WillColapseStack(Container newContainer)
+        private bool WillColapseStack(Container newContainer)
         {
             for (int currentContainer = 0; currentContainer < _containers.Count(); currentContainer++)
             {

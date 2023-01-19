@@ -12,33 +12,47 @@ namespace UnitTests
     public class RowTest
     {
         [TestMethod]
-        public void DevideOverRow_TryToFillRow()
+        public void DevideOverRow_TryToFillRow_LightWeakContainers()
         {
-            
+            // arrange
+            Row row = new Row(3, 3, 1);
+
+            List<Container> containers = new List<Container>()
+            {
+                new Container(1, 1, ContainerType.Normal, false),
+                new Container(1, 1, ContainerType.Normal, false),
+                new Container(1, 1, ContainerType.Normal, false),
+                new Container(1, 1, ContainerType.Normal, false),
+                new Container(1, 1, ContainerType.Normal, false)
+            };
+
+            // act
+            row.DevideOverRow(containers);
+
+            // assert
+            Assert.AreEqual(2, row.Stacks.ElementAt(0).Containers.Count);
         }
 
         [TestMethod]
-        public void TryFillCoolingColumn_TryFillCooolingColumn()
+        public void DevideOverRow_TryToFillRow_LightStrongContainers()
         {
-           
-        }
+            // arrange
+            Row row = new Row(3, 3, 1);
 
-        [TestMethod]
-        public void TryFillNormalColumn_TryFillNormalColumn()
-        {
-            
-        }
+            List<Container> containers = new List<Container>()
+            {
+                new Container(1, 10, ContainerType.Normal, false),
+                new Container(1, 10, ContainerType.Normal, false),
+                new Container(1, 10, ContainerType.Normal, false),
+                new Container(1, 10, ContainerType.Normal, false),
+                new Container(1, 10, ContainerType.Normal, false)
+            };
 
-        [TestMethod]
-        public void SortContainers_SortContainersOnType()
-        {
-            Assert.AreEqual(1, 2);
-        }
+            // act
+            row.DevideOverRow(containers);
 
-        [TestMethod]
-        public void SetRemainingContainers_ResetTheContainerListToTheRemainingContainers()
-        {
-            
+            // assert
+            Assert.AreEqual(3, row.Stacks.ElementAt(0).Containers.Count);
         }
     }
 }

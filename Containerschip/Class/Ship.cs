@@ -26,9 +26,10 @@ namespace Containerschip
             }
         }
 
+        // fill rows left, right, left right.
         public List<Container> DevideContainersOverShip(List<Container> containers)
         {
-            if (_rows.Count() % 2 == 0)
+            if (_rows.Count() % 2 != 0)
             {
                 FillMiddelRow(containers);
             }
@@ -41,28 +42,20 @@ namespace Containerschip
 
             return containers;
         }
-        
 
-        // make methods underneath private, they are public for testing porposes
-
-        public int CalcTotalWeight(List<Container> containers)
+        private void FillMiddelRow(List<Container> containers)
         {
-            return containers.Sum(e => e.Weight);
+            _rows[_rows.Count() / 2].DevideOverRow(containers);
         }
 
-        public void FillMiddelRow(List<Container> containers)
-        {
-            _rows[_rows.Count() / 2 + 1].DevideOverRow(containers);
-        }
-
-        public void FillRowOnLeft(List<Container> containers, int NumFromLeft)
+        private void FillRowOnLeft(List<Container> containers, int NumFromLeft)
         {
             _rows[NumFromLeft].DevideOverRow(containers);
         }
 
-        public void FillRowOnRight(List<Container> containers, int NumFromRight)
+        private void FillRowOnRight(List<Container> containers, int NumFromRight)
         {
-            _rows[_rows.Count-1-NumFromRight].DevideOverRow(containers);
+            _rows[_rows.Count - 1 - NumFromRight].DevideOverRow(containers);
         }
     }
 }

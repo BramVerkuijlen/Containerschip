@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace Containerschip
 {
@@ -37,27 +39,28 @@ namespace Containerschip
             }
         }
 
-        public void DevideOverRow(List<Container> containers)
+        public List<Container> DevideOverRow(List<Container> containers)
         {
-            for (int currentHight = 1; currentHight < StackHight; currentHight++)
+            for (int currentHight = 0; currentHight < StackHight; currentHight++)
             {
                 foreach (Stack stack in _stacks)
                 {
 
                     if (stack.Cooling)
                     {
-                        TryFillCoolingColumn(stack, currentHight, containers);
+                        containers = TryFillCoolingColumn(stack, currentHight, containers);
                     }
 
                     else
                     {
-                        TryFillNormalColumn(stack, currentHight, containers);
+                        containers = TryFillNormalColumn(stack, currentHight, containers);
                     }
                 }
             }
+            return containers;
         }
 
-        private void TryFillCoolingColumn(Stack stack, int currentHight, List<Container> containers)
+        private List<Container> TryFillCoolingColumn(Stack stack, int currentHight, List<Container> containers)
         {
             bool placeFilled;
 
@@ -68,40 +71,40 @@ namespace Containerschip
 
             (_normal, _valuable, _cooled, _valuableCooled) = SortContainers(containers);
 
-            if (currentHight < StackHight)
+            if (currentHight < StackHight - 1)
             {
-                placeFilled = TryFillSpace(stack, _cooled);
+                (placeFilled, _cooled) = TryFillSpace(stack, _cooled);
 
                 if (!placeFilled)
                 {
-                    placeFilled = TryFillSpace(stack, _normal);
+                    (_, _normal) = TryFillSpace(stack, _normal);
                 }
             }
 
-            else if (currentHight == StackHight)
+            else if (currentHight == StackHight - 1)
             {
-                placeFilled = TryFillSpace(stack, _valuableCooled);
+                (placeFilled, _valuableCooled) = TryFillSpace(stack, _valuableCooled);
 
                 if (!placeFilled)
                 {
-                    placeFilled = TryFillSpace(stack, _cooled);
+                    (placeFilled, _cooled) = TryFillSpace(stack, _cooled);
                 }
 
                 if (!placeFilled)
                 {
-                    placeFilled = TryFillSpace(stack, _valuable);
+                    (placeFilled, _valuable) = TryFillSpace(stack, _valuable);
                 }
 
                 if (!placeFilled)
                 {
-                    placeFilled = TryFillSpace(stack, _normal);
+                    (_, _normal) = TryFillSpace(stack, _normal);
                 }
             }
 
-            SetRemainingContainers(_normal, _valuable, _cooled, _valuableCooled, containers);
+            return containers = SetRemainingContainers(_normal, _valuable, _cooled, _valuableCooled);
         }
 
-        private void TryFillNormalColumn(Stack stack, int currentHight, List<Container> containers)
+        private List<Container> TryFillNormalColumn(Stack stack, int currentHight, List<Container> containers)
         {
             bool placeFilled;
 
@@ -112,23 +115,23 @@ namespace Containerschip
 
             (_normal, _valuable, _cooled, _valuableCooled) = SortContainers(containers);
 
-            if (currentHight < StackHight)
+            if (currentHight < StackHight - 1)
             {
-                placeFilled = TryFillSpace(stack, _normal);
+                (_, _normal) = TryFillSpace(stack, _normal);
             }
 
-            else if (currentHight == StackHight)
+            else if (currentHight == StackHight - 1)
             {
-                placeFilled = TryFillSpace(stack, _valuable);
+                (placeFilled, _valuable) = TryFillSpace(stack, _valuable);
 
 
                 if (!placeFilled)
                 {
-                    placeFilled = TryFillSpace(stack, _normal);
+                    (_, _normal) = TryFillSpace(stack, _normal);
                 }
             }
 
-            SetRemainingContainers(_normal, _valuable, _cooled, _valuableCooled, containers);
+            return containers = SetRemainingContainers(_normal, _valuable, _cooled, _valuableCooled);
         }
         private (List<Container>, List<Container>, List<Container>, List<Container>) SortContainers(List<Container> containers)
         {
@@ -165,19 +168,32 @@ namespace Containerschip
             return (normal, valuable, Cooled, ValuableCooled);
         }
 
-        private bool TryFillSpace(Stack stack, List<Container> containers)
+        private (bool, List<Container>) TryFillSpace(Stack stack, List<Container> containers)
         {
-            foreach (Container container in containers)
+            bool spaceFilled = false;
+            int filledContainerIndex = 0;
+
+            for (int i = 0; i < containers.Count(); i++)
             {
-                if (stack.TryAdd(container))
+                if (!spaceFilled)
                 {
-                    containers.Remove(container);
-                    return true;
+                    if (stack.TryAdd(containers[i]))
+                    {
+                        spaceFilled= true;
+                        filledContainerIndex= i;
+                    }
                 }
             }
-            return false;
+
+            if (spaceFilled)
+            {
+                containers.RemoveAt(filledContainerIndex);
+                return (true, containers);
+            }
+
+            return (false, containers);
         }
-        private void SetRemainingContainers(List<Container> _normal, List<Container> _valuable, List<Container> _cooled, List<Container> _valuableCooled, List<Container> containers)
+        private List<Container> SetRemainingContainers(List<Container> _normal, List<Container> _valuable, List<Container> _cooled, List<Container> _valuableCooled)
         {
             List<Container> Remaining = new List<Container>();
 
@@ -186,7 +202,7 @@ namespace Containerschip
             Remaining.AddRange(_cooled);
             Remaining.AddRange(_valuableCooled);
 
-            containers = Remaining;
+            return Remaining;
         }
     }
 }

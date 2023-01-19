@@ -12,73 +12,44 @@ namespace UnitTests
     [TestClass]
     public class ShipTest
     {
-        [DataRow(10, 5, 6, 21)]
         [TestMethod]
-        public void CalcTotalWeight_CalcWeight(int weight1, int weight2, int weight3, int expectedWeight)
+        public void DevideContainersOverShip_DevideContainersOverShip_SameWeigtSameCarryC()
         {
             //arrange
-
             Ship ship = new Ship(3, 3, 3, 1);
 
             List<Container> containers = new List<Container>
             {
-                new Container(weight1, 1, ContainerType.Normal, false),
-                new Container(weight2, 1, ContainerType.Valuable, false),
-                new Container(weight3, 1, ContainerType.Normal, true)
+                // normal
+                new Container(10, 40, ContainerType.Normal, false),
+                new Container(10, 40, ContainerType.Normal, false),
+                new Container(10, 40, ContainerType.Normal, false),
+                new Container(10, 40, ContainerType.Normal, false),
+
+                // cooled
+                new Container(10, 40, ContainerType.Normal, true),
+                new Container(10, 40, ContainerType.Normal, true),
+                new Container(10, 40, ContainerType.Normal, true),
+                new Container(10, 40, ContainerType.Normal, true),
+
+                // valuable
+                new Container(10, 40, ContainerType.Valuable, false),
+                new Container(10, 40, ContainerType.Valuable, false),
+                new Container(10, 40, ContainerType.Valuable, false),
+                new Container(10, 40, ContainerType.Valuable, false),
+
+                // valuable cooled
+                new Container(10, 40, ContainerType.Valuable, true),
+                new Container(10, 40, ContainerType.Valuable, true),
+                new Container(10, 40, ContainerType.Valuable, true),
+                new Container(10, 40, ContainerType.Valuable, true),
             };
 
             //act
-            int expected = ship.CalcTotalWeight(containers);
+            var expectedAccess = ship.DevideContainersOverShip(containers);
 
             //assert
-            Assert.AreEqual(expectedWeight, expected);
-        }
-
-        // not yet implemented \/
-
-        [TestMethod]
-        public void FillMiddelRow_FillRow(int weight1, int weight2, int weight3, int expectedWeight)
-        {
-            Ship ship = new Ship(3, 3, 3, 1);
-
-            List<Container> containers = new List<Container>
-            {
-                new Container(weight1, 1, ContainerType.Normal, false),
-                new Container(weight2, 1, ContainerType.Normal, false),
-                new Container(weight3, 1, ContainerType.Normal, false)
-            };
-
-            ship.FillMiddelRow(containers);
-        }
-
-        [TestMethod]
-        public void FillRowOnLeft_FillRow(int weight1, int weight2, int weight3, int expectedWeight)
-        {
-            Ship ship = new Ship(3, 3, 3, 1);
-
-            List<Container> containers = new List<Container>
-            {
-                new Container(weight1, 1, ContainerType.Normal, false),
-                new Container(weight2, 1, ContainerType.Normal, false),
-                new Container(weight3, 1, ContainerType.Normal, false)
-            };
-
-            ship.FillRowOnLeft(containers, 0);
-        }
-
-        [TestMethod]
-        public void FillRowOnRight_FillRow(int weight1, int weight2, int weight3, int expectedWeight)
-        {
-            Ship ship = new Ship(3, 3, 3, 1);
-
-            List<Container> containers = new List<Container>
-            {
-                new Container(weight1, 1, ContainerType.Normal, false),
-                new Container(weight2, 1, ContainerType.Normal, false),
-                new Container(weight3, 1, ContainerType.Normal, false)
-            };
-
-            ship.FillRowOnRight(containers, 0);
+            Assert.AreEqual(1, expectedAccess.Count());
         }
     }
     
